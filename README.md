@@ -3,6 +3,10 @@ This repository is for materials around the simulation of synaptic plasticity as
 
 1. https://github.com/bblais/plasticnet
 2. https://github.com/asdf-format/asdf
+3. https://github.com/bblais/Python-for-Science
+
+
+I hope to get rid of some of the dependencies, but until then it will remain a bit messy.
 
 
 
