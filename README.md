@@ -9,4 +9,4 @@ This repository is for materials around the simulation of synaptic plasticity as
 I hope to get rid of some of the dependencies, but until then it will remain a bit messy.
 
 
-
+Presenting at the [ARVO 2022](https://arvo2022.arvo.org/agenda) meeting.  [Poster session here](https://arvo2022.arvo.org/meetings/3GHWLKLLwcg77Swfm).
