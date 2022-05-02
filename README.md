@@ -1,5 +1,15 @@
 # Amblyopia
-This repository is for materials around the simulation of synaptic plasticity as it applies to amblyopia.  The code here uses:
+This repository is for materials around the simulation of synaptic plasticity as it applies to amblyopia.  
+
+The Poster can be found here:  https://github.com/bblais/Amblyopia/raw/main/ARVO%202022%20figures/ARVO%202022%20Poster%20Final.key.pdf
+
+Some old BCM animation can be found here: https://github.com/bblais/Amblyopia/tree/main/Animation
+
+
+
+
+
+The code here uses:
 
 1. https://github.com/bblais/plasticnet
 2. https://github.com/asdf-format/asdf
