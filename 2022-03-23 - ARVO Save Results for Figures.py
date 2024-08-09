@@ -1,39 +1,40 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
-get_ipython().run_line_magic('pylab', 'inline')
+get_ipython().run_line_magic('matplotlib', 'inline')
+from pylab import *
 
 
-# In[5]:
+# In[ ]:
 
 
 from deficit_defs import *
 
 
-# In[6]:
+# In[ ]:
 
 
 from include_2021_10_21 import *
 
 
-# In[7]:
+# In[ ]:
 
 
 weak_i=0
 strong_i=1
 
 
-# In[5]:
+# In[ ]:
 
 
 number_of_neurons=20
 S=Storage()
 closed_eye_noise_mat=linspace(0,1,21)
 
-for n,noise in tqdm(enumerate(closed_eye_noise_mat)):
+for n,noise in tqdm(enumerate(closed_eye_noise_mat),total=len(closed_eye_noise_mat)):
     sfname=f'sims-2021-11-19/continuous patch {number_of_neurons} neurons noise {noise:.1f}.asdf'
 
     R=Results(sfname)
@@ -49,19 +50,19 @@ for n,noise in tqdm(enumerate(closed_eye_noise_mat)):
 noise,recovery_rate_μ,recovery_rate_σ=S.arrays()
 
 
-# In[6]:
+# In[ ]:
 
 
 patch_result=noise,recovery_rate_μ,recovery_rate_σ
 
 
-# In[7]:
+# In[ ]:
 
 
 savevars('sims-2021-11-19/patch_results.asdf','patch_result')
 
 
-# In[8]:
+# In[ ]:
 
 
 atropine_blur_mat=linspace(0,6,21)
@@ -71,7 +72,7 @@ S=Storage()
 
 count=0
     
-for n,noise in tqdm(enumerate(closed_eye_noise_mat)):
+for n,noise in tqdm(enumerate(closed_eye_noise_mat),total=len(closed_eye_noise_mat)):
     for b,blur in enumerate(atropine_blur_mat):
         sfname=f'sims-2021-11-19/continuous atropine {number_of_neurons} neurons noise {noise:.1f} blur {blur:0.1f}.asdf'
 
@@ -90,7 +91,7 @@ for n,noise in tqdm(enumerate(closed_eye_noise_mat)):
 noise,blur,recovery_rate_μ,recovery_rate_σ=S.arrays()        
 
 
-# In[9]:
+# In[ ]:
 
 
 noise_N=len(closed_eye_noise_mat)
@@ -102,13 +103,13 @@ noise,blur,recovery_rate_μ,recovery_rate_σ=[_.reshape(noise_N,blur_N) for _ in
 atropine_result=noise,blur,recovery_rate_μ,recovery_rate_σ
 
 
-# In[10]:
+# In[ ]:
 
 
 savevars('sims-2021-11-19/atropine_results.asdf','atropine_result')
 
 
-# In[11]:
+# In[ ]:
 
 
 blur.shape
@@ -120,7 +121,7 @@ blur.shape
 
 
 
-# In[12]:
+# In[ ]:
 
 
 import cycler
@@ -154,20 +155,19 @@ title('Atropine Treatment')
 legend()
 
 
-# In[13]:
+# In[ ]:
 
 
 blur_N
 
 
-# In[14]:
+# In[ ]:
 
 
 contrast_mat=linspace(0,1,11)
 
 
-# In[16]:
-
+# In[ ]:
 
 
 number_of_neurons=20
@@ -190,13 +190,13 @@ contrast,recovery_rate_μ,recovery_rate_σ=S.arrays()
 contrast_result=contrast,recovery_rate_μ,recovery_rate_σ
 
 
-# In[17]:
+# In[ ]:
 
 
 savevars('sims-2021-11-19/contrast_results.asdf','contrast_result')
 
 
-# In[19]:
+# In[ ]:
 
 
 f_mat=array([10,30,50,70,90])
@@ -225,7 +225,7 @@ for fi,f in tqdm(enumerate(f_mat)):
 f,contrast,recovery_rate_μ,recovery_rate_σ=S.arrays()        
 
 
-# In[20]:
+# In[ ]:
 
 
 f_N=len(f_mat)
@@ -237,7 +237,7 @@ mask_result=f,contrast,recovery_rate_μ,recovery_rate_σ
 savevars('sims-2021-11-19/mask_results.asdf','mask_result')
 
 
-# In[21]:
+# In[ ]:
 
 
 noise_mat=linspace(0,1,11)

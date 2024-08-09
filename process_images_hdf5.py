@@ -329,7 +329,7 @@ def png_save_images(var,dirname,bits=8):
 
 
 def filtered_images(fname,*args,resolution='uint16',
-                        cache=True,verbose=True):
+                        cache=True,verbose=False):
     from numpy.random import randint,seed
     from hashlib import md5
     import os

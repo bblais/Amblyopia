@@ -538,11 +538,11 @@ def set_resolution(var,resolution='uint8',verbose=True):
 
     # convert to floats first
     for i in range(len(var['im'])):
-        var['im'][i]=var['im'][i].astype(numpy.float)
+        var['im'][i]=var['im'][i].astype(float)
         var['im'][i]=var['im'][i]*var['im_scale_shift'][0]+var['im_scale_shift'][1]
     var['im_scale_shift']=[1.0,0.0]
     
-    if tr==numpy.float:
+    if tr==float:
         return
     
     if tr=='uint8':

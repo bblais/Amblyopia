@@ -1,31 +1,39 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
-get_ipython().run_line_magic('pylab', 'inline')
+get_ipython().run_line_magic('matplotlib', 'inline')
+from pylab import *
 
 
-# In[2]:
+# In[ ]:
 
 
 from deficit_defs import *
 
 
-# In[3]:
+# In[ ]:
 
 
 savepath="/Users/bblais/Desktop/Spring 2022/arvo 2022/figures"
 
 
-# In[4]:
+# In[ ]:
+
+
+import matplotlib
+matplotlib.get_cachedir()
+
+
+# In[ ]:
 
 
 from include_2021_10_21 import *
 
 
-# In[5]:
+# In[ ]:
 
 
 # import matplotlib.font_manager
@@ -39,20 +47,20 @@ from include_2021_10_21 import *
 # HTML("<div style='column-count: 2;'>{}</div>".format(code))
 
 
-# In[6]:
+# In[ ]:
 
 
-rcParams['font.sans-serif']=['Source Sans Pro']
+#rcParams['font.sans-serif']=['Source Sans Pro']
 
 
-# In[7]:
+# In[ ]:
 
 
 weak_i=0
 strong_i=1
 
 
-# In[8]:
+# In[ ]:
 
 
 loadvars('sims-2021-11-19/glasses_results.asdf')
@@ -62,7 +70,46 @@ loadvars('sims-2021-11-19/contrast_results.asdf')
 loadvars('sims-2021-11-19/mask_results.asdf')
 
 
-# In[11]:
+# In[ ]:
+
+
+import cycler
+colormap=cm.viridis
+
+n = 5
+#colormap=cm.Blues
+#color = colormap(np.linspace(1, 0,int(1.2*n)))
+
+colormap=cm.viridis
+color = colormap(np.linspace(0, 1,n))
+
+
+noise,recovery_rate_μ,recovery_rate_σ=glasses_result        
+
+
+errorbar(noise,-recovery_rate_μ,yerr=2*recovery_rate_σ,elinewidth=1,color=color[2]) # positive = recovery
+ylabel(r'$\longleftarrow$ Slower recovery     Faster Recovery $\longrightarrow$'+"\n[ODI shift/time]")
+xlabel('Open-Eye Noise Level')
+#title('Patch Treatment')
+
+# sfname=f"{savepath}/patch_treatment.pdf"
+# print(sfname)
+# savefig(sfname,bbox_inches="tight")
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
 
 
 import cycler
@@ -84,12 +131,12 @@ ylabel(r'$\longleftarrow$ Slower recovery     Faster Recovery $\longrightarrow$'
 xlabel('Closed-Eye Noise Level')
 #title('Patch Treatment')
 
-sfname=f"{savepath}/patch_treatment.pdf"
-print(sfname)
-savefig(sfname,bbox_inches="tight")
+# sfname=f"{savepath}/patch_treatment.pdf"
+# print(sfname)
+# savefig(sfname,bbox_inches="tight")
 
 
-# In[12]:
+# In[ ]:
 
 
 import cycler
@@ -127,7 +174,7 @@ print(sfname)
 savefig(sfname,bbox_inches="tight")
 
 
-# In[13]:
+# In[ ]:
 
 
 import cycler
@@ -174,13 +221,13 @@ print(sfname)
 savefig(sfname,bbox_inches="tight")
 
 
-# In[26]:
+# In[ ]:
 
 
 color
 
 
-# In[15]:
+# In[ ]:
 
 
 import cycler

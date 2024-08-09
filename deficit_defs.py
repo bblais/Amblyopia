@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import plasticnet as pn
@@ -9,7 +9,8 @@ from splikes.utils import paramtext
 import process_images_hdf5 as pi5
 import os
 from savevars import savevars
-from tqdm import tqdm
+#from tqdm import tqdm
+from tqdm.notebook import tqdm
 
 import platform
 _debug = 'Darwin' in platform.platform()
@@ -22,7 +23,7 @@ if _debug:
 print(platform.platform())
 
 from numpy import linspace,array
-from multiprocess import Pool
+from multiprocess import Pool,set_start_method
 
 from collections import namedtuple
 
@@ -790,7 +791,7 @@ def μσ(y,axis=None):
     
 
 
-# In[2]:
+# In[ ]:
 
 
 def run_one_fix(params,overwrite=False):
@@ -833,7 +834,7 @@ def run_one_fix(params,overwrite=False):
     
 
 
-# In[3]:
+# In[ ]:
 
 
 def run_one_blur(params):

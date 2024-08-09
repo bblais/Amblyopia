@@ -4,7 +4,8 @@
 # In[ ]:
 
 
-get_ipython().run_line_magic('pylab', 'inline')
+get_ipython().run_line_magic('matplotlib', 'inline')
+from pylab import *
 
 
 # In[ ]:
@@ -44,9 +45,9 @@ def run_one_continuous_fix(params,overwrite=False):
     
     seq=pn.Sequence()
     # deliberately use a standard deficit, with it's own eta and noise
-    seq+=deficit(number_of_neurons=params.number_of_neurons) 
+    seq+=deficit(number_of_neurons=params.number_of_neurons,total_time=1*day,) 
 
-    seq+=fix(total_time=100*hour,
+    seq+=fix(total_time=10*hour, # total_time=100*hour,
              save_interval=20*minute,number_of_neurons=params.number_of_neurons,
              eta=eta,noise=noise)
 
@@ -223,7 +224,7 @@ all_params=to_named_tuple(all_params)
 # In[ ]:
 
 
-get_ipython().run_cell_magic('time', '', 'print(func.__name__)\nfunc(all_params[0],overwrite=True)')
+get_ipython().run_cell_magic('time', '', 'print(func.__name__)\nfunc(all_params[0],overwrite=True)\n')
 
 
 # In[ ]:
@@ -235,16 +236,17 @@ do_params=make_do_params(all_params,verbose=True)
 # In[ ]:
 
 
-real_time=9*minute+ 6
+real_time=2*minute+ 38
 print(time2str(real_time*len(do_params)/number_of_processes))
 
 
 # In[ ]:
 
 
-pool = Pool(processes=number_of_processes)
-result = pool.map_async(func, do_params)
-print(result.get())
+set_start_method('fork',force=True)
+with Pool(processes=number_of_processes) as pool:
+    result = pool.map_async(func, do_params,chunksize=number_of_processes)
+    print(result.get())
 
 
 # ## Patch
