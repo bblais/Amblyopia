@@ -44,7 +44,7 @@ from scipy.io import loadmat
 
 # for whitening
 from scipy.fftpack import fft2, fftshift, ifft2, ifftshift
-from scipy import real,absolute
+from numpy import real,absolute
 
 
 def read_raw_vanhateren100(show=True):
@@ -329,7 +329,8 @@ def png_save_images(var,dirname,bits=8):
 
 
 def filtered_images(fname,*args,resolution='uint16',
-                        cache=True,verbose=False):
+                        cache=True,verbose=True,
+                        base_directory='cache_images'):
     from numpy.random import randint,seed
     from hashlib import md5
     import os
@@ -337,7 +338,10 @@ def filtered_images(fname,*args,resolution='uint16',
 
     filter_hash=md5((fname+" "+str(args)).encode('ascii')).hexdigest()
 
-    cache_fname='cache_images_%s.asdf' % filter_hash
+    if not os.path.exists(base_directory):
+        os.mkdir(base_directory)
+
+    cache_fname=base_directory+'/cache_images_%s.asdf' % filter_hash
 
     if os.path.exists(cache_fname) and cache:
         if verbose:
@@ -358,6 +362,18 @@ def filtered_images(fname,*args,resolution='uint16',
             if T=='blur':
                 image_data=make_blur(image_data,f['size'],
                                     verbose=verbose)
+            elif T=="norm":
+                image_data=make_norm(image_data,
+                                    verbose=verbose)                
+            elif T=="Rtodog":
+                image_data=make_Rtodog(image_data,f['sd1'],f['sd2'],
+                                    verbose=verbose)                
+            elif T=='dog':
+                image_data=make_dog(image_data,f['sd1'],f['sd2'],
+                                    verbose=verbose)
+            elif T=='log2dog':
+                image_data=make_log2dog(image_data,f['sd1'],f['sd2'],
+                                    verbose=verbose)
             elif T=='noise':
                 image_data=add_noise(image_data,f['std'],
                                     verbose=verbose)
@@ -374,16 +390,26 @@ def filtered_images(fname,*args,resolution='uint16',
                 else:
                     seed(101)
 
-                mask_filenames=sorted(glob(f['name']))
-                if not mask_filenames:
-                    raise ValueError('No Masks matching pattern %s' % f['name'])
-                chosen_mask=randint(0,len(mask_filenames),len(image_data['im']))
-                
-                actual_names=[mask_filenames[_] for _ in chosen_mask]
-                if verbose:
-                    print("Actual masks: ",",".join(actual_names))
+                if f['name']:
+                    mask_filenames=sorted(glob(f['name']))
+                    if not mask_filenames:
+                        raise ValueError('No Masks matching pattern %s' % f['name'])
 
-                image_data=apply_mask(image_data,actual_names)
+                    if len(mask_filenames)==1:
+                        actual_names=mask_filenames[0]
+                    else:
+                        chosen_mask=randint(0,len(mask_filenames),len(image_data['im']))
+    
+                        actual_names=[mask_filenames[_] for _ in chosen_mask]
+                    if verbose:
+                        print("Actual masks: ",",".join(actual_names))
+                else:
+                    actual_names=None
+                    
+                apply_to_average=f.get('apply_to_average',False)
+                contrast=f.get('contrast',1.0)
+                    
+                image_data=apply_mask(image_data,actual_names,apply_to_average,contrast)
             else:
                 raise ValueError("Filter type %s not implemented." % T)
                 

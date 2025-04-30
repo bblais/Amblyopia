@@ -12,7 +12,7 @@ from scipy.io import loadmat
 
 # for whitening
 from scipy.fftpack import fft2, fftshift, ifft2, ifftshift
-from scipy import real,absolute
+from numpy import absolute,real
 
 def image2array(im):
     if im.mode not in ("L", "F"):
@@ -57,7 +57,8 @@ def dog(sd1,sd2,size):
             g=g- 1./(2*pi*sd2*sd2)*numpy.exp(-x**2/2/sd2**2 -y**2/2/sd2**2)
     else:
         g=- 1./(2*pi*sd2*sd2)*numpy.exp(-x**2/2/sd2**2 -y**2/2/sd2**2)
-    
+
+    g=g-g.mean()
     return g
 
 def dog_filter(A,sd1=1,sd2=3,size=None,shape='valid',surround_weight=1):
@@ -76,7 +77,7 @@ def dog_filter(A,sd1=1,sd2=3,size=None,shape='valid',surround_weight=1):
     return B
 
 
-def make_scale_shift(var,scale=1.0,shift=0.0,truncate=False,verbose=True):
+def make_scale_shift(var,scale=1.0,shift=0.0,truncate=False,verbose=False):
     im2_list=[]
     
     im_scale_shift=var['im_scale_shift']
@@ -105,7 +106,7 @@ def make_scale_shift(var,scale=1.0,shift=0.0,truncate=False,verbose=True):
     
     
 # this one seems to ignore the standard scale shift
-def scale_shift(var,scale=1.0,shift=0.0,truncate=False,verbose=True):
+def scale_shift(var,scale=1.0,shift=0.0,truncate=False,verbose=False):
     im2_list=[]
     
     im_scale_shift=var['im_scale_shift']
@@ -131,9 +132,9 @@ def scale_shift(var,scale=1.0,shift=0.0,truncate=False,verbose=True):
         print()
     return var2
 
-def apply_mask(var,mask_name):
+def apply_mask(var,mask_name,apply_to_average=False,contrast=1):
     from PIL import Image
-    from pylab import array,randint
+    from pylab import array,randint,ones_like,ones
 
     im2_list=[]
     
@@ -146,11 +147,14 @@ def apply_mask(var,mask_name):
 
     for count,im in enumerate(var['im']):
 
-        if isinstance(mask_name,list):
-            im_A=Image.open(mask_name[count])
+        if mask_name:
+            if isinstance(mask_name,list):
+                im_A=Image.open(mask_name[count])
+            else:
+                im_A=Image.open(mask_name)
+            A=array(im_A)
         else:
-            im_A=Image.open(mask_name)
-        A=array(im_A)
+            A=ones((im1.shape[0],im1.shape[1],4))*255
 
 
         im2=im*im_scale_shift[0]+im_scale_shift[1]
@@ -160,11 +164,20 @@ def apply_mask(var,mask_name):
         alpha_A=A[(0+r):(im1.shape[0]+r),(0+c):(im1.shape[1]+c),3]/255
         
         
-        
-        im2=im2*alpha_A
+        if apply_to_average:
+            average_im=im2.mean()*ones_like(im2)
+            im2=im2*contrast+average_im*(1-contrast)
+            im2=im2*alpha_A+average_im*(1-alpha_A)
+        else:
+            im2=im2*contrast
+            im2=im2*alpha_A
+            
 
         if count==0:
-            print( "Mask %s" % (mask_name))
+            if apply_to_average:
+                print( "Mask %s (applied to average)" % (mask_name))
+            else:
+                print( "Mask %s" % (mask_name))
 
         im2_list.append(im2)
         
@@ -175,7 +188,7 @@ def apply_mask(var,mask_name):
     return var2
 
 
-def make_norm(var,mu=0,sd=1,subtract_mean=True,verbose=True):
+def make_norm(var,mu=0,sd=1,subtract_mean=True,verbose=False):
     
     im2_list=[]
     
@@ -207,7 +220,7 @@ def make_norm(var,mu=0,sd=1,subtract_mean=True,verbose=True):
         print()
     return var2
 
-def make_Rtodog(var,sd1=1,sd2=3,size=32,shape='valid',verbose=True):
+def make_Rtodog(var,sd1=1,sd2=3,size=32,shape='valid',verbose=False):
     from numpy import log2
 
     im2_list=[]
@@ -246,7 +259,7 @@ def make_Rtodog(var,sd1=1,sd2=3,size=32,shape='valid',verbose=True):
 
 
 
-def make_log2dog(var,sd1=1,sd2=3,size=32,shape='valid',verbose=True):
+def make_log2dog(var,sd1=1,sd2=3,size=32,shape='valid',verbose=False):
     from numpy import log2
 
     im2_list=[]
@@ -283,7 +296,7 @@ def make_log2dog(var,sd1=1,sd2=3,size=32,shape='valid',verbose=True):
         print()
     return var2
 
-def make_dog(var,sd1=1,sd2=3,size=32,shape='valid',verbose=True):
+def make_dog(var,sd1=1,sd2=3,size=32,shape='valid',verbose=False):
     
     im2_list=[]
     
@@ -316,7 +329,7 @@ def make_dog(var,sd1=1,sd2=3,size=32,shape='valid',verbose=True):
         print()
     return var2
 
-def make_white(var,verbose=True):
+def make_white(var,verbose=False):
     
     im_scale_shift=var['im_scale_shift']
     im2_list=[]
@@ -351,7 +364,7 @@ def make_white(var,verbose=True):
 
 
     
-def make_rot(var,which_angles,more=False,verbose=True):
+def make_rot(var,which_angles,more=False,verbose=False):
     
     def radians(deg):
         return deg*numpy.pi/180.0
@@ -431,7 +444,7 @@ def make_rot(var,which_angles,more=False,verbose=True):
 
         
 
-def make_pixel_shift(var,shift_x,shift_y,verbose=True):
+def make_pixel_shift(var,shift_x,shift_y,verbose=False):
     
     im2_list=[]
     
@@ -463,7 +476,7 @@ def make_pixel_shift(var,shift_x,shift_y,verbose=True):
     var2={'im':im2_list,'im_scale_shift':[1.0,0.0]}
     return var2
 
-def add_noise(var,sd=1.0,verbose=True):
+def add_noise(var,sd=1.0,verbose=False):
     from pylab import randn
     im2_list=[]
     
@@ -493,7 +506,7 @@ def add_noise(var,sd=1.0,verbose=True):
     return var2
 
 
-def make_blur(var,sd=1.0,radius=None,verbose=True):
+def make_blur(var,sd=1.0,radius=None,verbose=False):
     
     if not radius:
         radius=sd*3.0
@@ -528,7 +541,7 @@ def make_blur(var,sd=1.0,radius=None,verbose=True):
     return var2
 
         
-def set_resolution(var,resolution='uint8',verbose=True):
+def set_resolution(var,resolution='uint8',verbose=False):
     
     if (var['im'][0].dtype.name==resolution):  # already there
         return
@@ -558,8 +571,8 @@ def set_resolution(var,resolution='uint8',verbose=True):
     if verbose:
         print( "Resolution %s -> %s" % (sr,tr))
     
-    mn=numpy.Inf
-    mx=-numpy.Inf
+    mn=numpy.inf
+    mx=-numpy.inf
     for im in var['im']:
         m=im.min()
         if m<mn:
